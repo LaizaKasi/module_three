@@ -1,90 +1,83 @@
 from django.http import JsonResponse
-import nltk
-from nltk.corpus import wordnet
-import gensim.downloader as api
+#import nltk
+#from nltk.corpus import wordnet
+#import gensim.downloader as api
 from google.cloud import translate_v2 as translate
-from transformers import T5ForConditionalGeneration, T5Tokenizer, BartForConditionalGeneration, BartTokenizer
-import torch
+#from transformers import T5ForConditionalGeneration, T5Tokenizer, BartForConditionalGeneration, BartTokenizer
+#import torch
 import os
-import html
+import google.generativeai as genai
 
-# Ensure NLTK WordNet corpus is downloaded
-nltk.download('wordnet')
+# Replace with your API key
+api_key = "AIzaSyDFfv9bSCsmELltZ_Id9SK8mk2BRlcTmfY"
 
-# Load the pre-trained Word2Vec model
-w2v_model = api.load("word2vec-google-news-300")
+# Configure the API key
+genai.configure(api_key=api_key)
+
+
 
 # Function to translate text from Shona to English
 def translate_shona_to_english(shona_text, credentials_file):
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
     translate_client = translate.Client()
     translation = translate_client.translate(shona_text, source_language='sn', target_language='en')
-    english_translation = html.unescape(translation['translatedText'])
-    return english_translation
+    english_translation = translation['translatedText']
 
-# Function to translate text from English to Shona
+    prompt = "give me synonyms of " + shona_text
+
+    response = genai.generate_text(
+        prompt=prompt,
+    )
+    return [english_translation,response.result]
+    
+
+# # Function to translate text from English to Shona
 def translate_english_to_shona(english_text, credentials_file):
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_file
     translate_client = translate.Client()
     translation = translate_client.translate(english_text, source_language='en', target_language='sn')
-    shona_translation = html.unescape(translation['translatedText'])
+    shona_translation = translation['translatedText']
     return shona_translation
 
-# Initialize the T5 paraphrasing model and tokenizer
-paraphrase_tokenizer = T5Tokenizer.from_pretrained("hetpandya/t5-small-tapaco")
-paraphrase_model = T5ForConditionalGeneration.from_pretrained("hetpandya/t5-small-tapaco")
-
-# Initialize the BART summarization model and tokenizer
-summarize_tokenizer = BartTokenizer.from_pretrained('eugenesiow/bart-paraphrase')
-summarize_model = BartForConditionalGeneration.from_pretrained('eugenesiow/bart-paraphrase').to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
 
 def translate_view(request):
     shona_text = request.GET.get('text')
-    if not shona_text:
-        return JsonResponse({'error': 'No text provided'}, status=400)
-    credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-    try:
-        english_text = translate_shona_to_english(shona_text, credentials_file)
-        return JsonResponse({'translated_text': english_text})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    english_text = translate_shona_to_english(shona_text, credentials_file)
+    synonyms=english_text[1]
+    english_text=english_text[0]
+    
+    return JsonResponse({'translated_text': english_text,
+                         'synonyms':synonyms
+                         })
+
+def summarise_view(request):
+    shona_text = request.GET.get('text')
+    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    shona_text=translate_shona_to_english(shona_text, credentials_file)
+    shona_text=shona_text[0]
+    shona_word = "In the vast tapestry of human experience, the pursuit of knowledge stands as a testament to our inherent curiosity and desire for understanding. From the earliest days of our species, when primitive humans gazed up at the stars with wonder and trepidation, to the modern era where science and technology unlock the mysteries of the cosmos, this quest has driven remarkable achievements and profound insights. It has propelled us to explore the depths of the oceans, the expanses of space, and the intricacies of the human mind. The cumulative efforts of countless individuals across generations have led to groundbreaking discoveries in fields as diverse as medicine, physics, literature, and the arts, each contributing to the ever-growing reservoir of human knowledge. This relentless pursuit not only satiates our curiosity but also underpins the advancement of society, enabling improvements in quality of life, fostering innovation, and addressing the complex challenges that face humanity. As we continue to push the boundaries of what is known, the pursuit of knowledge remains a beacon guiding us towards a future where understanding and wisdom pave the way for greater harmony, prosperity, and fulfillment for all."
+
+    prompt = "generate a summaries of this statement," + shona_text + ",to 50 words"
+    response = genai.generate_text(
+        prompt=prompt,
+    )
+
+
+
+    return JsonResponse({'summarised text':  translate_english_to_shona(response.result,credentials_file)})
 
 def paraphrase_view(request):
     shona_text = request.GET.get('text')
-    if not shona_text:
-        return JsonResponse({'error': 'No text provided'}, status=400)
-    credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-    try:
-        english_text = translate_shona_to_english(shona_text, credentials_file)
-        paraphrases = get_paraphrases(english_text, paraphrase_model, paraphrase_tokenizer)
-        paraphrased_english_text = paraphrases[0] if paraphrases else english_text
-        paraphrased_shona_text = translate_english_to_shona(paraphrased_english_text, credentials_file)
-        return JsonResponse({'paraphrased_text': paraphrased_shona_text})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    shona_text=translate_shona_to_english(shona_text, credentials_file)
+    shona_text=shona_text[0]
+    shona_word = "In the vast tapestry of human experience, the pursuit of knowledge stands as a testament to our inherent curiosity and desire for understanding. From the earliest days of our species, when primitive humans gazed up at the stars with wonder and trepidation, to the modern era where science and technology unlock the mysteries of the cosmos, this quest has driven remarkable achievements and profound insights. It has propelled us to explore the depths of the oceans, the expanses of space, and the intricacies of the human mind. The cumulative efforts of countless individuals across generations have led to groundbreaking discoveries in fields as diverse as medicine, physics, literature, and the arts, each contributing to the ever-growing reservoir of human knowledge. This relentless pursuit not only satiates our curiosity but also underpins the advancement of society, enabling improvements in quality of life, fostering innovation, and addressing the complex challenges that face humanity. As we continue to push the boundaries of what is known, the pursuit of knowledge remains a beacon guiding us towards a future where understanding and wisdom pave the way for greater harmony, prosperity, and fulfillment for all."
 
-def summarize_view(request):
-    shona_text = request.GET.get('text')
-    if not shona_text:
-        return JsonResponse({'error': 'No text provided'}, status=400)
-    credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-    try:
-        english_text = translate_shona_to_english(shona_text, credentials_file)
-        summarized_english_text = summarize_text(english_text, summarize_model, summarize_tokenizer)
-        summarized_shona_text = translate_english_to_shona(summarized_english_text, credentials_file)
-        return JsonResponse({'summarized_text': summarized_shona_text})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    prompt = "paraphrase" + shona_text
 
-# Function to get paraphrases of English text
-def get_paraphrases(text, model, tokenizer):
-    input_text = f"paraphrase: {text} </s>"
-    input_ids = tokenizer.encode(input_text, return_tensors="pt", add_special_tokens=True)
-    outputs = model.generate(input_ids=input_ids, max_length=256, num_return_sequences=5, num_beams=5, temperature=1.5, early_stopping=True)
-    paraphrases = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
-    return paraphrases
+    response = genai.generate_text(
+        prompt=prompt,
+    )
 
-# Function to summarize English text
-def summarize_text(text, model, tokenizer):
-    inputs = tokenizer(text, return_tensors='pt').to(model.device)
-    summary_ids = model.generate
+    return JsonResponse({'paraphrased text': translate_english_to_shona(response.result,credentials_file)})
