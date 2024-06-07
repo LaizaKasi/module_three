@@ -129,4 +129,4 @@ GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '8mhtz#rb!@&nlb%^b7$t3od%vjsl9kns!4y9q9d36@7a)r!%0+')
 
 # Google Cloud Credentials
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/agorejena/Music/abc.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'https://drive.usercontent.google.com/download?id=16vtKnShYRzaupg3wb-uWF4rLnUn4ik6K&export=download&authuser=0'
