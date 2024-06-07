@@ -42,7 +42,7 @@ def translate_view(request):
     shona_text = request.GET.get('text')
     if not shona_text:
         return JsonResponse({'error': 'No text provided'}, status=400)
-    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     try:
         english_text = translate_shona_to_english(shona_text, credentials_file)
         return JsonResponse({'translated_text': english_text})
@@ -53,7 +53,7 @@ def paraphrase_view(request):
     shona_text = request.GET.get('text')
     if not shona_text:
         return JsonResponse({'error': 'No text provided'}, status=400)
-    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     try:
         english_text = translate_shona_to_english(shona_text, credentials_file)
         paraphrases = get_paraphrases(english_text, paraphrase_model, paraphrase_tokenizer)
@@ -67,7 +67,7 @@ def summarize_view(request):
     shona_text = request.GET.get('text')
     if not shona_text:
         return JsonResponse({'error': 'No text provided'}, status=400)
-    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    credentials_file = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     try:
         english_text = translate_shona_to_english(shona_text, credentials_file)
         summarized_english_text = summarize_text(english_text, summarize_model, summarize_tokenizer)
@@ -87,6 +87,4 @@ def get_paraphrases(text, model, tokenizer):
 # Function to summarize English text
 def summarize_text(text, model, tokenizer):
     inputs = tokenizer(text, return_tensors='pt').to(model.device)
-    summary_ids = model.generate(inputs['input_ids'], max_length=150, num_beams=5, early_stopping=True)
-    summarized_text = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-    return summarized_text
+    summary_ids = model.generate

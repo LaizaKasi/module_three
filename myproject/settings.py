@@ -126,3 +126,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Add the Google credentials path
 GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '8mhtz#rb!@&nlb%^b7$t3od%vjsl9kns!4y9q9d36@7a)r!%0+')
+
+# Google Cloud Credentials
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/agorejena/Music/abc.json"
