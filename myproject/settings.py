@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -129,4 +130,17 @@ GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '8mhtz#rb!@&nlb%^b7$t3od%vjsl9kns!4y9q9d36@7a)r!%0+')
 
 # Google Cloud Credentials
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "https://drive.google.com/file/d/16vtKnShYRzaupg3wb-uWF4rLnUn4ik6K/view?usp=sharing"
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+load_dotenv()  # Load environment variables from .env file
+
+# Access environment variables
+GOOGLE_CLOUD_TYPE = os.getenv('GOOGLE_CLOUD_TYPE')
+GOOGLE_CLOUD_PROJECT_ID = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
+GOOGLE_CLOUD_PRIVATE_KEY_ID = os.getenv('GOOGLE_CLOUD_PRIVATE_KEY_ID')
+GOOGLE_CLOUD_PRIVATE_KEY = os.getenv('GOOGLE_CLOUD_PRIVATE_KEY').replace('\\n', '\n')  # Ensure newline characters are handled
+GOOGLE_CLOUD_CLIENT_EMAIL = os.getenv('GOOGLE_CLOUD_CLIENT_EMAIL')
+GOOGLE_CLOUD_CLIENT_ID = os.getenv('GOOGLE_CLOUD_CLIENT_ID')
+GOOGLE_CLOUD_AUTH_URI = os.getenv('GOOGLE_CLOUD_AUTH_URI')
+GOOGLE_CLOUD_TOKEN_URI = os.getenv('GOOGLE_CLOUD_TOKEN_URI')
+GOOGLE_CLOUD_AUTH_PROVIDER_CERT_URL = os.getenv('GOOGLE_CLOUD_AUTH_PROVIDER_CERT_URL')
+GOOGLE_CLOUD_CLIENT_CERT_URL = os.getenv('GOOGLE_CLOUD_CLIENT_CERT_URL')
