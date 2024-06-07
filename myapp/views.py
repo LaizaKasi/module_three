@@ -42,7 +42,7 @@ def translate_english_to_shona(english_text, credentials_file):
 
 def translate_view(request):
     shona_text = request.GET.get('text')
-    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    credentials_file = "abc.json"
     english_text = translate_shona_to_english(shona_text, credentials_file)
     synonyms=english_text[1]
     english_text=english_text[0]
@@ -53,7 +53,7 @@ def translate_view(request):
 
 def summarise_view(request):
     shona_text = request.GET.get('text')
-    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    credentials_file = "abc.json"
     shona_text=translate_shona_to_english(shona_text, credentials_file)
     shona_text=shona_text[0]
     shona_word = "In the vast tapestry of human experience, the pursuit of knowledge stands as a testament to our inherent curiosity and desire for understanding. From the earliest days of our species, when primitive humans gazed up at the stars with wonder and trepidation, to the modern era where science and technology unlock the mysteries of the cosmos, this quest has driven remarkable achievements and profound insights. It has propelled us to explore the depths of the oceans, the expanses of space, and the intricacies of the human mind. The cumulative efforts of countless individuals across generations have led to groundbreaking discoveries in fields as diverse as medicine, physics, literature, and the arts, each contributing to the ever-growing reservoir of human knowledge. This relentless pursuit not only satiates our curiosity but also underpins the advancement of society, enabling improvements in quality of life, fostering innovation, and addressing the complex challenges that face humanity. As we continue to push the boundaries of what is known, the pursuit of knowledge remains a beacon guiding us towards a future where understanding and wisdom pave the way for greater harmony, prosperity, and fulfillment for all."
@@ -69,7 +69,7 @@ def summarise_view(request):
 
 def paraphrase_view(request):
     shona_text = request.GET.get('text')
-    credentials_file = "C:/Users/agorejena/Music/abc.json"
+    credentials_file = "abc.json"
     shona_text=translate_shona_to_english(shona_text, credentials_file)
     shona_text=shona_text[0]
     shona_word = "In the vast tapestry of human experience, the pursuit of knowledge stands as a testament to our inherent curiosity and desire for understanding. From the earliest days of our species, when primitive humans gazed up at the stars with wonder and trepidation, to the modern era where science and technology unlock the mysteries of the cosmos, this quest has driven remarkable achievements and profound insights. It has propelled us to explore the depths of the oceans, the expanses of space, and the intricacies of the human mind. The cumulative efforts of countless individuals across generations have led to groundbreaking discoveries in fields as diverse as medicine, physics, literature, and the arts, each contributing to the ever-growing reservoir of human knowledge. This relentless pursuit not only satiates our curiosity but also underpins the advancement of society, enabling improvements in quality of life, fostering innovation, and addressing the complex challenges that face humanity. As we continue to push the boundaries of what is known, the pursuit of knowledge remains a beacon guiding us towards a future where understanding and wisdom pave the way for greater harmony, prosperity, and fulfillment for all."
